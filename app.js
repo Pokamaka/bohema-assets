@@ -103,7 +103,7 @@
   const dlg = $('.rpw'), frame = dlg && $('iframe', dlg);
   const rpUrl = (o = {}) => {
     const u = new URL(BK.url);
-    const p = { nostep: BK.address ? 1 : '', address: BK.address, step_type: BK.step, source: BK.source, ...o };
+    const p = { nostep: BK.address ? 1 : '', address: BK.address, step_type: BK.step, iframe: 1, source: BK.source, ...o };
     Object.entries(p).forEach(([k, v]) => v !== '' && v != null && v !== 0 && u.searchParams.set(k, v));
     return u.toString();
   };
@@ -111,6 +111,8 @@
     goal('book_open', { from, mode: BK.mode });
     if (BK.mode !== 'link' || !dlg) return false;
     const url = rpUrl(o);
+    // как и официальный widget.js: на iPhone/iPad виджет открывается отдельной вкладкой (Safari режет iframe)
+    if (/iphone|ipod|ipad/i.test(navigator.userAgent)) { window.open(url.replace(/([?&])iframe=1&?/, '$1').replace(/[?&]$/, ''), '_blank'); return true; }
     if (frame.src !== url) frame.src = url;
     $('.rpw__ext', dlg).href = url;
     if (typeof dlg.showModal !== 'function') { window.open(url, '_blank', 'noopener'); return true; }
@@ -121,6 +123,9 @@
     $('.rpw__x', dlg).addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
     dlg.addEventListener('close', () => root.classList.remove('rpw-open'));
+    // виджет сам просит закрыться после брони
+    window.addEventListener('message', e => { if (e.data === 'closemodal' && dlg.open) dlg.close(); });
+    $$('[data-rp-any]').forEach(b => b.addEventListener('click', () => openRp({ date: f.date.value, count: f.count.value }, 'any')));
   }
 
   /* any "book" link: open Restoplace (or our booking tab), preselect table */
@@ -133,7 +138,7 @@
     if (BK.mode === 'widget' && rpWidget()) { e.preventDefault(); goal('book_open', { from, mode: 'widget' }); return; }
     // widget script blocked or not loaded yet → its page in a new tab, if the link is known
     if (BK.mode === 'widget' && BK.url) { e.preventDefault(); window.open(BK.url, '_blank', 'noopener'); goal('book_open', { from, mode: 'widget-link' }); return; }
-    if (BK.mode === 'link' && openRp({ open_item: t && t.rp, date: '' }, from)) { e.preventDefault(); return; }
+    // режим «окно»: сначала гость выбирает стол на сайте, Restoplace открывается кнопкой формы
     selectTab($('#t-book'));
   }));
 
@@ -160,7 +165,7 @@
     e.preventDefault();
     if (BK.mode === 'widget' && !rpWidget() && BK.url) { window.open(BK.url, '_blank', 'noopener'); return; }
     if (BK.mode === 'widget') { if (!rpWidget()) say('bad', 'Окно брони ещё загружается — нажмите ещё раз через секунду или позвоните нам.'); else goal('book_open', { from: 'form', mode: 'widget' }); return; }
-    if (BK.mode === 'link') { openRp({ open_item: TABLES[current].rp, date: f.date.value, count: f.count.value }, 'form'); return; }
+    if (BK.mode === 'link') { const t = TABLES[current], dur = +f.querySelector('[name=dur]:checked').value; openRp({ open_item: t.rp, date: f.date.value, count: f.count.value, text: `${t.name} (${t.hall}), играем ${dur} ${hoursWord(dur)}` }, 'form'); return; }
     if (f.phone.value.replace(/\D/g, '').length < 10) {
       f.phone.classList.add('err'); f.phone.focus();
       say('bad', 'Укажите телефон — перезвоним и подтвердим бронь.'); return;

@@ -228,7 +228,7 @@ html[data-bg="leopard"] .seg input:checked+span{color:#1A120C}
 .rpw__ext{font-size:13px;color:var(--muted)}
 .rpw__x{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .rpw__x svg{width:22px;height:22px}
-.rpw iframe{flex:1;width:100%;border:0;background:#fff}
+.rpw iframe{flex:1;width:100%;border:0;background:#1b1714}
 html.rpw-open{overflow:hidden}
 @media (max-width:640px){.rpw{width:100vw;height:100dvh;border:0}.rpw__ext{display:none}}
 .mzoom{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:4vmin;background:rgba(10,7,5,.88);cursor:zoom-out}
@@ -631,3 +631,4 @@ html[data-wine] .pdots--line .pdot i::after{background:var(--wine)}
 @keyframes cookieIn{from{opacity:0;transform:translateY(12px)}}
 @media (max-width:760px){.cookie{left:12px;right:12px;width:auto;bottom:calc(76px + env(safe-area-inset-bottom));padding:14px 16px}}
 @media (prefers-reduced-motion:reduce){.cookie{animation:none}}
+.bform__alt{display:inline;padding:0;border:0;background:none;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
