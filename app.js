@@ -135,9 +135,11 @@
     goal('book_click', { from });
     if (a.dataset.table) pickTable(a.dataset.table);
     const t = TABLES[current];
-    if (BK.mode === 'widget' && rpWidget()) { e.preventDefault(); goal('book_open', { from, mode: 'widget' }); return; }
+    // кнопки без класса виджета (сборка для Тильды) просто ведут к выбору стола
+    const rpBtn = a.classList.contains('restoplace-click-open');
+    if (BK.mode === 'widget' && rpBtn && rpWidget()) { e.preventDefault(); goal('book_open', { from, mode: 'widget' }); return; }
     // widget script blocked or not loaded yet → its page in a new tab, if the link is known
-    if (BK.mode === 'widget' && BK.url) { e.preventDefault(); window.open(BK.url, '_blank', 'noopener'); goal('book_open', { from, mode: 'widget-link' }); return; }
+    if (BK.mode === 'widget' && rpBtn && BK.url) { e.preventDefault(); window.open(BK.url, '_blank', 'noopener'); goal('book_open', { from, mode: 'widget-link' }); return; }
     // режим «окно»: сначала гость выбирает стол на сайте, Restoplace открывается кнопкой формы
     selectTab($('#t-book'));
   }));
