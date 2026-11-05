@@ -55,10 +55,10 @@
       <rect class="t-felt" x="${r}" y="${r}" width="${w - 2 * r}" height="${h - 2 * r}" rx="3"/>
       <line x1="${w * .25}" y1="${r}" x2="${w * .25}" y2="${h - r}" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
       <circle cx="${w * .25}" cy="${h / 2}" r="2" fill="rgba(255,255,255,.55)"/>
-      <circle cx="${w * .72}" cy="${h / 2}" r="5" fill="#F3EADC"/>
-      <circle cx="${w * .76}" cy="${h / 2 - 5}" r="5" fill="#C0392B"/>
+      <circle class="t-cue" cx="${w * .72}" cy="${h / 2}" r="5" fill="#F3EADC"/>
+      <g class="t-rack"><circle cx="${w * .76}" cy="${h / 2 - 5}" r="5" fill="#C0392B"/>
       <circle cx="${w * .76}" cy="${h / 2 + 5}" r="5" fill="#E2B42B"/>
-      <circle cx="${w * .8}" cy="${h / 2}" r="5" fill="#111"/>
+      <circle cx="${w * .8}" cy="${h / 2}" r="5" fill="#111"/></g>
       ${pockets}${dots}
     </svg>`;
   };
@@ -83,6 +83,15 @@
     const t = TABLES[current];
     $('[data-t-name]').textContent = t.name;
     $('[data-t-size]').textContent = `${t.hall} · ${t.ft} футов${t.field ? ` · поле ${t.field}` : ''}`;
+    // крупный стол в карточке брони: цвет сукна выбранного стола, шар заново катится к пирамиде
+    const pic = $('[data-t-pic]');
+    if (pic) {
+      pic.className = `bform__pic tbtn--${t.ft}`;
+      pic.style.setProperty('--felt', t.sel);
+      pic.innerHTML = tableSvg(t.ft);
+      void pic.offsetWidth; pic.classList.add('is-roll');
+      const card = pic.closest('.bform'); card.classList.remove('is-swap'); void card.offsetWidth; card.classList.add('is-swap');
+    }
   };
   tbtns.forEach((b, i) => {
     b.addEventListener('click', () => { pickTable(b.dataset.id); const t = TABLES[b.dataset.id]; if (t) goal('table_pick', { table: t.name, hall: t.hall }); });
@@ -145,7 +154,7 @@
   }));
 
   /* ---------- booking form ---------- */
-  f.date.value = iso(msk); f.date.min = iso(msk);
+  if (f.date) { f.date.value = iso(msk); f.date.min = iso(msk); }
   const hoursWord = n => n === 1 ? 'час' : 'часа';
   const calc = () => {
     const d = new Date(f.date.value + 'T12:00').getDay();
@@ -155,7 +164,7 @@
     $('[data-sum]').textContent = (rate * dur).toLocaleString('ru-RU') + ' ₽';
     $('[data-sum-note]').textContent = `${isWeekend(d) ? 'Выходной' : 'Будний день'} · ${dur} ${hoursWord(dur)}`;
   };
-  f.addEventListener('change', calc); f.addEventListener('input', calc); calc();
+  if (f.date) { f.addEventListener('change', calc); f.addEventListener('input', calc); calc(); }
   const submitGoal = () => {
     const d = new Date(f.date.value + 'T12:00').getDay(), dur = +f.querySelector('[name=dur]:checked').value;
     const card = DATA.prices.find(p => p.days.includes(d)) || DATA.prices[0] || { price: 0 };

@@ -632,3 +632,31 @@ html[data-wine] .pdots--line .pdot i::after{background:var(--wine)}
 @media (max-width:760px){.cookie{left:12px;right:12px;width:auto;bottom:calc(76px + env(safe-area-inset-bottom));padding:14px 16px}}
 @media (prefers-reduced-motion:reduce){.cookie{animation:none}}
 .bform__alt{display:inline;padding:0;border:0;background:none;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* ---------- бронь: выбор стола (режим виджета Restoplace) ---------- */
+.tbtn{transition:border-color .2s,background .2s,transform .25s}
+.tbtn:hover{transform:translateY(-2px)}
+.tbtn svg{transition:filter .3s}
+.tbtn[aria-checked="true"] svg{filter:drop-shadow(0 8px 18px color-mix(in srgb,var(--felt-sel) 45%,transparent))}
+.tbtn::after{content:"";position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23140E09' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;opacity:0;transform:scale(.4);transition:opacity .2s,transform .3s cubic-bezier(.3,1.6,.5,1)}
+.tbtn[aria-checked="true"]::after{opacity:1;transform:none}
+.bform--pick{display:flex;flex-direction:column;overflow:hidden}
+.bform__pic{margin:16px 0 20px;position:relative}
+.bform__pic::before{content:"";position:absolute;inset:12% 6% -4%;background:radial-gradient(closest-side,color-mix(in srgb,var(--felt) 55%,transparent),transparent);filter:blur(22px);opacity:.75;transition:background .5s}
+.bform__pic svg{position:relative;display:block;width:100%;height:auto;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
+.bform__pic.tbtn--8 svg{width:90%;margin:0 auto}
+.bform__pic .t-felt{fill:var(--felt);transition:fill .5s}
+.bform__pic.is-roll .t-cue{animation:cueRoll 1s cubic-bezier(.2,.7,.25,1) both}
+.bform__pic.is-roll .t-rack{animation:rackHit .5s .78s ease-out both}
+@keyframes cueRoll{from{transform:translateX(-46%)}to{transform:none}}
+@keyframes rackHit{0%{transform:none}35%{transform:translateX(5px)}100%{transform:none}}
+.bform--pick .bform__name{font-size:clamp(34px,3.4vw,46px)}
+.bform--pick.is-swap .bform__name,.bform--pick.is-swap .bform__size{animation:swapIn .45s ease-out both}
+.bform--pick.is-swap .bform__size{animation-delay:.06s}
+@keyframes swapIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.bform__prices{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line)}
+.bform__prices li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.bform__prices span{color:var(--muted)}
+.bform__prices b{font-weight:600;white-space:nowrap}
+.bform__go{width:100%;height:58px;margin-top:22px;font-size:16px}
+@media (prefers-reduced-motion:reduce){.bform__pic.is-roll .t-cue,.bform__pic.is-roll .t-rack,.bform--pick.is-swap .bform__name,.bform--pick.is-swap .bform__size{animation:none}.tbtn:hover{transform:none}}
