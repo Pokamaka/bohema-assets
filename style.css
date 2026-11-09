@@ -660,3 +660,6 @@ html[data-wine] .pdots--line .pdot i::after{background:var(--wine)}
 .bform__prices b{font-weight:600;white-space:nowrap}
 .bform__go{width:100%;height:58px;margin-top:22px;font-size:16px}
 @media (prefers-reduced-motion:reduce){.bform__pic.is-roll .t-cue,.bform__pic.is-roll .t-rack,.bform--pick.is-swap .bform__name,.bform--pick.is-swap .bform__size{animation:none}.tbtn:hover{transform:none}}
+
+.acard__note{font-size:12px;line-height:1.45;color:var(--muted)!important;opacity:.8;margin:14px 0 0!important;max-width:42ch}
+.acard__note::before{content:"* "}
